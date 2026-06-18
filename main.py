@@ -1,12 +1,9 @@
-from clean_file_messages import get_clean_messages
-messages = get_clean_messages()
-print(f"😎 YES! WE COLLECT: {len(messages)} MESSAGES!")
-import pprint
+import json
+from second_step_clean_msg import second_step_clean_message
 
-if messages:
-    print("\n👇 here are the first three")
-    print("-" * 50)
-    
-    for msg in messages[0:3]:
-        pprint.pprint(msg)
-        print("-" * 50) 
+final_dialogues = second_step_clean_message()
+
+print(f"😎 YES! WE COLLECT: {len(final_dialogues)} MESSAGES!")
+print("\n👇 here are the first three\n" + "-" * 50)
+for msg in final_dialogues[:3]:
+    print(f"{msg['from_who']}: {msg['user_text']}\n" + "-" * 50)

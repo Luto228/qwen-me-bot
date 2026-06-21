@@ -1,55 +1,69 @@
-<img src="https://img.shields.io/badge/Made%20with-Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
-<img src="https://img.shields.io/badge/Status-In%20Progress-blueviolet?style=for-the-badge" alt="Status">
+<img src="https://img.shields.io/badge/Made%20with-Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"> <img src="https://img.shields.io/badge/Status-Ready%20for%20context-blue?style=for-the-badge" alt="Status">
 
 # qwen-me-bot
 
-This project is designed to become a universal Telegram bot that can read your messages, copy your communication style, and answer on your behalf while you are away.
+This project is ready for content generation: all data preparation is complete and all processing steps are fully operational.
 
-## What it does
+## What this project does
 
-- Reads Telegram chat history from exported JSON files
-- Cleans and extracts relevant message data
-- Prepares your personal messaging style for AI-driven response modeling
-- Aims to behave like your digital conversational twin
+- Collects exported Telegram chats from the `messages_for_ai` folder.
+- Cleans and merges messages, removing unnecessary noise (system notifications, logs, etc.).
+- Prepares and structures content for the Gemini API.
+- Saves intermediate results to `clean_msg/second_step_clean_msg.json`.
+- Automatically formats and outputs the final training-ready dataset to `clean_msg/third_step_clean_msg.json`.
 
-## Important setup step
+## Important setup steps before running
 
-To make the bot work, you must create a folder named `messages_for_ai` in the project root and place your exported Telegram chats inside it.
+1. Create a folder named `messages_for_ai` in the project root.
+2. Export your Telegram chats in **JSON format** and place the exported files into the `messages_for_ai` folder.
+3. Open `config.py.example`, copy it, rename the copy to `config.py`, and replace `YOUR_GEMINI_TOKEN` with your actual Gemini API key.
 
-### How to export your Telegram chats
+> ⚠️ **Important:** Never commit your `config.py` with real tokens to GitHub! Make sure it is added to your `.gitignore`.
 
-1. Open Telegram.
-2. Open a chat.
-3. Tap the three dots menu.
-4. Choose `Export chat`.
-5. Deselect all optional checkboxes.
-6. Make sure to select `JSON` format.
-7. Export and save the file into `messages_for_ai`.
+## Expected folder structure
 
-## Required folder structure
-
-The bot expects:
-
+- `config.py` (created from `config.py.example`)
+- `requirements.txt`
 - `messages_for_ai/`
-  - `your_chat_export.json`
-  - `another_chat_export.json`
+  - `chat1.json`
+  - `chat2.json`
+- `clean_msg/`
+  - `second_step_clean_msg.json`
+  - `third_step_clean_msg.json`
 
-The script will scan the folder for `.json` files and extract messages automatically.
+## Installation and Run
 
-## How to run
-
-Use Python to run the main script:
-
+### 🛠️ On Windows:
 ```bash
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
 python main.py
 ```
+### 🍎 On Linux / macOS:
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python3 main.py
+```
+For subsequent runs on Linux/macOS, remember to activate the environment first using source .venv/bin/activate.
 
-The script will print how many messages it collected and show the first few cleaned entries.
+### How it works
+# The execution flows through three main phases:
 
-## Notes
+- **Extraction**: The script reads all JSON files in messages_for_ai and extracts text messages.
 
-- The bot is intended to be a flexible Telegram assistant.
-- It will read your exported chat history and use it to learn your messaging style.
-- Right now the bot can only read your chats and remove all the noise, leaving only the cleaned messages in the terminal.
-- More functionality will be added soon.
-- The exported JSON files are mandatory for the bot to function.
+- **Merging**: Consecutive messages from the same author are merged to maintain conversation flow.
+
+- **Refactoring** : The structured data is passed to the Gemini API in optimized batches to format it into a flawless dataset for training LLMs (like Qwen).
+
+### Limitations and Notes
+- Messages are processed by the Gemini API in batches.
+
+- Thanks to our bulletproof pipeline, the output is saved as a structured dataset, but it is always recommended to verify clean_msg/third_step_clean_msg.json using your IDE's built-in JSON syntax validation.
+
+### Next Updates
+- **🤖 Phase 2 (Upcoming)**: A dedicated, standalone Telegram bot powered by aiogram 3.x that acts as your AI clone in direct messages (DMs).
+
+- **👥 Phase 3**: Integration into group chats and userbot capabilities to allow the clone to converse on your behalf in real-time.

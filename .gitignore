@@ -2,10 +2,10 @@
 __pycache__/
 *.py[codz]
 *$py.class
-message_for_ai
-Nataliresult.json
-Sasharesult.json
+messages_for_ai/
 test.py
+config.py
+clean_msg/
 # C extensions
 *.so
 
